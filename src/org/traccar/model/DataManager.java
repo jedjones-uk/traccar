@@ -27,6 +27,7 @@ public interface DataManager {
      */
     public List<Device> getDevices() throws Exception;
     public Device getDeviceByImei(String imei) throws Exception;
+    public Device getDeviceById(Long id) throws Exception;
 
     /**
      * Manage positions

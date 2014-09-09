@@ -45,6 +45,9 @@ public class DatabaseDataManager implements DataManager {
     private NamedParameterStatement queryGetDevices;
     private NamedParameterStatement queryAddPosition;
     private NamedParameterStatement queryUpdateLatestPosition;
+    private String queryAddPositionTemplate;
+    private String queryUpdateLatestPositionTemplate;
+    private AdvancedConnection globalConnection;
 
     /**
      * Initialize database
@@ -71,7 +74,7 @@ public class DatabaseDataManager implements DataManager {
         String user = properties.getProperty("database.user");
         String password = properties.getProperty("database.password");
         AdvancedConnection connection = new AdvancedConnection(url, user, password);
-
+        globalConnection = connection;
         // Load statements from configuration
         String query;
 
@@ -81,11 +84,13 @@ public class DatabaseDataManager implements DataManager {
         }
 
         query = properties.getProperty("database.insertPosition");
+        queryAddPositionTemplate = query;
         if (query != null) {
             queryAddPosition = new NamedParameterStatement(connection, query);
         }
 
         query = properties.getProperty("database.updateLatestPosition");
+        queryUpdateLatestPositionTemplate = query;
         if (query != null) {
             queryUpdateLatestPosition = new NamedParameterStatement(connection, query);
         }
@@ -103,6 +108,7 @@ public class DatabaseDataManager implements DataManager {
                 Device device = new Device();
                 device.setId(result.getLong("id"));
                 device.setImei(result.getString("imei"));
+                device.setDatabase(result.getString("database"));
                 deviceList.add(device);
             }
         }
@@ -114,6 +120,7 @@ public class DatabaseDataManager implements DataManager {
      * Devices cache
      */
     private Map<String, Device> devices;
+    private Map<Long, Device> devices_id;
 
     @Override
     public Device getDeviceByImei(String imei) throws SQLException {
@@ -129,7 +136,27 @@ public class DatabaseDataManager implements DataManager {
     }
 
     @Override
+    public Device getDeviceById(Long id) throws SQLException {
+
+        if (devices_id == null || !devices_id.containsKey(id)) {
+            devices_id = new HashMap<Long, Device>();
+            for (Device device : getDevices()) {
+                devices_id.put(device.getId(), device);
+            }
+        }
+
+        return devices_id.get(id);
+    }
+
+    @Override
     public synchronized Long addPosition(Position position) throws SQLException {
+        if (queryAddPositionTemplate.contains("_database_")) {
+            String query = queryAddPositionTemplate;
+            query = query.replace("_database_", this.getDeviceById(position.getDeviceId()).getDatabase());
+            if (query != null) {
+                queryAddPosition = new NamedParameterStatement(globalConnection, query);
+            }
+        }
 
         if (queryAddPosition != null) {
             queryAddPosition.prepare(Statement.RETURN_GENERATED_KEYS);
@@ -180,7 +207,14 @@ public class DatabaseDataManager implements DataManager {
     }
 
     @Override
-    public void updateLatestPosition(Position position, Long positionId) throws SQLException {
+    public void updateLatestPosition(Position position, Long positionId ) throws SQLException {
+        if (queryUpdateLatestPositionTemplate.contains("_database_")) {
+            String query = queryUpdateLatestPositionTemplate;
+            query = query.replace("_database_", this.getDeviceById(position.getDeviceId()).getDatabase());
+            if (query != null) {
+                queryUpdateLatestPosition = new NamedParameterStatement(globalConnection, query);
+            }
+        }
 
         if (queryUpdateLatestPosition != null) {
             queryUpdateLatestPosition.prepare();
