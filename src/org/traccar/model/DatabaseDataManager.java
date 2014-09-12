@@ -127,8 +127,10 @@ public class DatabaseDataManager implements DataManager {
 
         if (devices == null || !devices.containsKey(imei)) {
             devices = new HashMap<String, Device>();
+            devices_id = new HashMap<Long, Device>();
             for (Device device : getDevices()) {
                 devices.put(device.getImei(), device);
+                devices_id.put(device.getId(), device);
             }
         }
 
@@ -139,8 +141,10 @@ public class DatabaseDataManager implements DataManager {
     public Device getDeviceById(Long id) throws SQLException {
 
         if (devices_id == null || !devices_id.containsKey(id)) {
+            devices = new HashMap<String, Device>();
             devices_id = new HashMap<Long, Device>();
             for (Device device : getDevices()) {
+                devices.put(device.getImei(), device);
                 devices_id.put(device.getId(), device);
             }
         }
