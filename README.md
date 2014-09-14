@@ -29,14 +29,14 @@ CONFIG OPTIONS:
 Below is a list of some of the config options that are available for this release and suggested options for use.
 
 ##Geocoder options
-`<entry key='geocoder.enable'>true</entry>` Is required for any geocoder to be used
-`<entry key='geocoder.type'>bing</entry>` nominatim/bing/google are the options aviable. If none is given, google is used by default.
+`<entry key='geocoder.enable'>true</entry>` Is required for any geocoder to be used  
+`<entry key='geocoder.type'>bing</entry>` nominatim/bing/google are the options aviable. If none is given, google is used by default.  
 ### Geocoder specific options
-`<entry key='geocoder.key'>BING API KEY HERE</entry>` to use the bing geocoder you must provider a valid api key with this option
-`<entry key='geocoder.url'>http://nominatim.openstreetmap.org/reverse</entry>` to use nominatim you must provide a url that is a valid nominatim geocode server
+`<entry key='geocoder.key'>BING API KEY HERE</entry>` to use the bing geocoder you must provider a valid api key with this option  
+`<entry key='geocoder.url'>http://nominatim.openstreetmap.org/reverse</entry>` to use nominatim you must provide a url that is a valid nominatim geocode server  
 
 ##Web interface port
-`<entry key='http.enable'>false</entry>` It is advised that you disable the built in traccar web access as it is not compatible with changes in this release.
+`<entry key='http.enable'>false</entry>` It is advised that you disable the built in traccar web access as it is not compatible with changes in this release.  
 
 ##Notes
 It is advised that you append `&amp;useUnicode=true&amp;characterEncoding=UTF-8` to the database.url 
