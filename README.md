@@ -14,9 +14,9 @@ installed Java Runtime Environment.
 
 CHANGES FROM DEFAULT:
 -----------
-THIS VERSION IS CURRENTLY ONLY DESIGNED TO USE MYSQL
+THIS VERSION IS CURRENTLY ONLY DESIGNED TO USE MYSQL. THE CHANGES ARE NOT COMPATIBLE WITH TRACCAR WEB
 
-This branch of Traccar is slightly different to the main branch.
+This version of Traccar is slightly different to the main branch.
 Currently the biggest difference is  the query `<entry key='database.selectDevice'>`
 requires a 3rd column called `database`. This is then accessed in the other queries
 (`<entry key='database.updateLatestPosition'>` and `<entry key='database.insertPosition'>`)
@@ -24,6 +24,24 @@ with the placeholder `_database_`. The aim of this placeholder is to allow you t
 direct an insert or update to the correct database for a device in the event 
 you have a multi-tenant system without using concat and prepare statement.
 
+CONFIG OPTIONS:
+-----------
+Below is a list of some of the config options that are available for this release and suggested options for use.
+
+##Geocoder options
+`<entry key='geocoder.enable'>true</entry>` Is required for any geocoder to be used
+`<entry key='geocoder.type'>bing</entry>` nominatim/bing/google are the options aviable. If none is given, google is used by default.
+### Geocoder specific options
+`<entry key='geocoder.key'>BING API KEY HERE</entry>` to use the bing geocoder you must provider a valid api key with this option
+`<entry key='geocoder.url'>http://nominatim.openstreetmap.org/reverse</entry>` to use nominatim you must provide a url that is a valid nominatim geocode server
+
+##Web interface port
+`<entry key='http.enable'>false</entry>` It is advised that you disable the built in traccar web access as it is not compatible with changes in this release.
+
+##Notes
+It is advised that you append `&amp;useUnicode=true&amp;characterEncoding=UTF-8` to the database.url 
+connection string if you intended to use a geocoder otherwise there may be display issues for utf8
+addresses.
 
 LICENSE:
 -----------
